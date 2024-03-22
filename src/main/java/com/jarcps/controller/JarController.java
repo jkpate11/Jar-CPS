@@ -53,7 +53,9 @@ public class JarController {
         if (jar.getQuantity() < 200 && jar.getPreviousQuantity()>=200) {
             String toEmail = "jinesh1077@gmail.com";
             String subject = "Jar Quantity Notification";
-            String message = "The quantity of jar is below threshold.";
+            String itemName = jar.getName();
+            String amazonLink = "https://www.amazon.com/s?k=" + itemName;
+            String message = "The quantity of " + itemName + " is below threshold. You can purchase it on Amazon: " + amazonLink;
             emailService.sendNotificationEmail(toEmail, subject, message);
             System.out.println("Notification email sent to: " + toEmail);
         }
