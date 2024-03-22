@@ -3,182 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jar Quantity Management - CPS</title>
-    <style>
-        .jar {
-            width: 100px;
-            height: 200px;
-            background-color: #e0e0e0;
-            border-radius: 20px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .liquid {
-            width: 100%;
-            background-color: #007bff;
-            position: absolute;
-            bottom: 0;
-            border-radius: 20px;
-            transition: height 0.3s ease;
-        }
-        .jar-label {
-            text-align: center;
-        }
-        .threshold-mark {
-            position: absolute;
-            bottom: calc(200px * 0.2);
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: red;
-        }
-        .quantity-info {
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            text-align: center;
-        }
-        #notification {
-            display: none;
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <title>Automatic Refill System for Jars</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet"> <!-- Link to custom CSS file -->
 </head>
 <body>
-    <h1>Jar Quantity Management - CPS</h1>
-    <div id="jar-info">
-        <div class="jar">
-            <div class="liquid" id="liquid"></div>
-            <div class="threshold-mark"></div>
-            <div class="quantity-info">
-                <p><span id="jar-name"></span></p>
-                <p><span id="quantity"></span> grams</p>
+    <div class="container-fluid bg-light">
+        <div class="container">
+            <div class="text-center mt-6">
+                <h1 class="display-5">Automatic Refill System</h1>
+                
+            </div>
+            <div class="jar-container">
+                <div class="jar">
+                    <div class="liquid" id="liquid"></div>
+                    <div class="threshold-mark"></div>
+                    <div class="quantity-info">
+                        <p class="jar-name" id="jar-name"></p>
+                        <p class="jar-quantity" id="quantity"></p>
+                    </div>
+                </div>
+                <div class="quantity-controls">
+                    <input type="number" class="form-control" id="quantity-input" min="0" max="1000" value="100">
+                    <div class="btn-group mt-2" role="group">
+                        <button class="btn btn-primary btn-lg" onclick="increaseQuantity()">Increase</button>
+                        <button class="btn btn-secondary btn-lg" onclick="decreaseQuantity()">Decrease</button>
+                    </div>
+                </div>
+                <div id="notification" class="alert alert-danger mt-3" role="alert" style="display: none;">
+                    Jar quantity is below threshold!
+                </div>
             </div>
         </div>
-        <input type="number" id="quantity-input" min="0" max="1000" value="100"> 
-        <button onclick="increaseQuantity()">Increase Quantity</button>
-        <button onclick="decreaseQuantity()">Decrease Quantity</button>
     </div>
     
-    <div id="notification" style="display: none;">
-        <p>Notification: Jar quantity is below threshold!</p>
-    </div>
-
-    <script>
-        
-        async function fetchJarInfo() {
-            try {
-                const response = await fetch("/jars/1"); 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch jar information");
-                }
-                const jar = await response.json();
-                document.getElementById("jar-name").innerText = jar.name;
-                document.getElementById("quantity").innerText = jar.quantity;
-                updateJarVisual(jar.quantity);
-                if (jar.quantity >= 200) {
-                    document.getElementById("notification").style.display = "none";
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function updateJarVisual(quantity) {
-            const jarHeight = 200; 
-            const maxQuantity = 1000; 
-            const liquidHeight = (quantity / maxQuantity) * jarHeight;
-            document.getElementById("liquid").style.height = `${liquidHeight}px`;
-        }
-
-        async function increaseQuantity() {
-            try {
-                const currentQuantity = parseInt(document.getElementById("quantity").innerText);
-                const quantityInput = parseInt(document.getElementById("quantity-input").value);
-                const maxAmount = parseInt(document.getElementById("quantity-input").max);
-                const newQuantity = currentQuantity + quantityInput;
-                if (newQuantity <= maxAmount) {
-                    const response = await fetch("/jars/adjustQuantity", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ id: 1, quantity: newQuantity }) // Assuming jar ID is 1
-                    });
-                    if (!response.ok) {
-                        throw new Error("Failed to adjust jar quantity");
-                    }
-                    document.getElementById("quantity").innerText = newQuantity;
-                    if (newQuantity < 200) {
-                        document.getElementById("notification").style.display = "block";
-                        
-                        await notifyBackend();
-                    }
-                } else {
-                    console.error("Exceeds maximum amount");
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function decreaseQuantity() {
-            try {
-                const currentQuantity = parseInt(document.getElementById("quantity").innerText);
-                const quantityInput = parseInt(document.getElementById("quantity-input").value);
-                const newQuantity = currentQuantity - quantityInput;
-                if (newQuantity >= 0) {
-                    const response = await fetch("/jars/adjustQuantity", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ id: 1, quantity: newQuantity }) // Assuming jar ID is 1
-                    });
-                    if (!response.ok) {
-                        throw new Error("Failed to adjust jar quantity");
-                    }
-                    document.getElementById("quantity").innerText = newQuantity;
-                    if (newQuantity < 200) {
-                        document.getElementById("notification").style.display = "block";
-                        // Send notification to backend
-                        await notifyBackend();
-                    }
-                } else {
-                    console.error("Quantity cannot be negative");
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        async function notifyBackend() {
-            try {
-                const response = await fetch("/jars/notify", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ id: 1, message: "Jar quantity is below threshold" }) // Assuming jar ID is 1
-                });
-                if (!response.ok) {
-                    throw new Error("Failed to send notification to backend");
-                }
-                console.log("Notification sent to backend");
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        window.onload = function() {
-            fetchJarInfo();
-            setInterval(fetchJarInfo, 1000);
-        };
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script> <!-- Link to JavaScript file -->
 </body>
 </html>

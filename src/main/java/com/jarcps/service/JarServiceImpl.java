@@ -25,6 +25,7 @@ public class JarServiceImpl implements JarService {
     public void adjustQuantity(int id, double newQuantity) {
         Jar jar = jars.get(id);
         if (jar != null) {
+        	jar.setPreviousQuantity(jar.getQuantity());
             jar.setQuantity(newQuantity);
             jars.put(id, jar);
         }

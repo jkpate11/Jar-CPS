@@ -16,6 +16,7 @@ import com.jarcps.service.EmailService;
 import com.jarcps.service.JarService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/jars")
@@ -45,8 +46,11 @@ public class JarController {
     }
 
     @PostMapping("/notify")
-    public ResponseEntity<Void> notifyBackend(@RequestBody Jar jar) {
-        if (jar.getQuantity() < 200) {
+    public ResponseEntity<Void> notifyBackend(@RequestBody Map<String, Integer> requestBody) {
+    	int id = requestBody.get("id");
+        Jar jar = jarService.getJarById(id);
+        System.out.println(jar.getQuantity() + " " + jar.getPreviousQuantity());
+        if (jar.getQuantity() < 200 && jar.getPreviousQuantity()>=200) {
             String toEmail = "jinesh1077@gmail.com";
             String subject = "Jar Quantity Notification";
             String message = "The quantity of jar is below threshold.";
