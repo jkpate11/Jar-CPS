@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="shortcut icon" href="#">
+    <script src="https://cdn.jsdelivr.net/sockjs/latest/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatic Refill System for Jars</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet"> <!-- Link to custom CSS file -->
+    <title>Jar Refill System</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container-fluid bg-light">
-        <div class="container">
-            <div class="text-center mt-6">
-                <h1 class="display-5">Automatic Refill System</h1>
-                
+    <div id="container">
+        <div id="jar-container">
+            <div id="jar">
+                <div id="liquid"></div> <!-- Add this element for the liquid -->
             </div>
-            <div class="jar-container">
-                <div class="jar">
-                    <div class="liquid" id="liquid"></div>
-                    <div class="threshold-mark"></div>
-                    <div class="quantity-info">
-                        <p class="jar-name" id="jar-name"></p>
-                        <p class="jar-quantity" id="quantity"></p>
-                    </div>
-                </div>
-                <div class="quantity-controls">
-                    <input type="number" class="form-control" id="quantity-input" min="0" max="1000" value="100">
-                    <div class="btn-group mt-2" role="group">
-                        <button class="btn btn-primary btn-lg" onclick="increaseQuantity()">Increase</button>
-                        <button class="btn btn-secondary btn-lg" onclick="decreaseQuantity()">Decrease</button>
-                    </div>
-                </div>
-                <div id="notification" class="alert alert-danger mt-3" role="alert" style="display: none;">
-                    Jar quantity is below threshold!
-                </div>
-            </div>
+            <div id="quantity-display">Quantity: <span id="quantity">0</span> grams</div>
+        </div>        
+        <div id="table-container">
+            <h2>Round Information</h2>
+            <table id="round-table">
+                <thead>
+                    <tr>
+                        <th>Round ID</th>
+                        <th>Starting Weight</th>
+                        <th>Removed Weight</th>
+                        <th>Weight Change Due To Removal</th>
+                        <th>Refill Amount</th>
+                        <th>Ending Weight</th>
+                    </tr>
+                </thead>
+                <tbody id="round-table-body">
+                    <!-- Round information will be added here dynamically -->
+                </tbody>
+            </table>
         </div>
     </div>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="js/script.js"></script> <!-- Link to JavaScript file -->
+
+    <div id="input-container">
+        <input type="text" id="input-quantity" placeholder="Enter quantities separated by commas">
+        <button id="execute-btn">Execute</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/sockjs/latest/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
