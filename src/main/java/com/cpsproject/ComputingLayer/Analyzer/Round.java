@@ -1,4 +1,4 @@
-package com.cpsproject.SRC;
+package com.cpsproject.ComputingLayer.Analyzer;
 
 import com.google.gson.Gson;
 

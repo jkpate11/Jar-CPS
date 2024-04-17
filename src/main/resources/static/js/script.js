@@ -1,4 +1,4 @@
-let quantities = []; // Array to store quantities for all rounds
+let quantities = []; 
 const socket = new SockJS('/ws');
 const stompClient = Stomp.over(socket);
 stompClient.debug = () => {}
@@ -6,15 +6,14 @@ console.log("version 1.2.6");
 stompClient.connect({}, function (frame) {
     stompClient.subscribe('/topic/weight', function (message) {
         const currentWeight = JSON.parse(message.body);
-        // Update the UI with the current weight
+
         updateWeight(currentWeight);
     });
 
     stompClient.subscribe('/topic/round', function (message) {
         const roundInfo = JSON.parse(message.body);
         console.log("Received round info:", roundInfo);
-        
-        // Append the round information to the table
+
         const roundTableBody = document.getElementById("round-table-body");
         const newRow = roundTableBody.insertRow();
         newRow.innerHTML = `
@@ -30,16 +29,78 @@ stompClient.connect({}, function (frame) {
 
 
 document.addEventListener("DOMContentLoaded", function() { 
-    // Event listener for execute button
+
     document.getElementById("execute-btn").addEventListener("click", function() {
         const inputQuantity = document.getElementById("input-quantity").value;
         console.log("input: ", inputQuantity);
-        addQuantities(inputQuantity); // Call addQuantities with the input value
+        addQuantities(inputQuantity); 
         
-        executeRefill(); // Start the refill process for the first round
+        executeRefill(); 
     }); 
+
+    document.getElementById("send-file-btn").addEventListener("click", function() {
+        const selectedFile = "src/main/resources/test1.csv"; 
+        if (selectedFile) {
+            const fileName = selectedFile; 
+            console.log("Selected file:", fileName);
+            sendFileName(fileName);
+        } else {
+            console.log("No file selected.");
+        }
+    }); 
+
+    document.getElementById("fail-btn").addEventListener("click", function() {
+        addWeight();
+    }); 
+
     
 });
+
+function sendFileName(fileName) {
+    fetch('/dataFromFile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: fileName, 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        console.log("Done");
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+function addWeight() {
+    fetch('/addExtraWeight', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(1200), 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+
+        console.log("Failed done");
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
 
 function updateWeight(currentWeight) {
     const jar = document.getElementById("jar");
@@ -48,11 +109,11 @@ function updateWeight(currentWeight) {
 
     quantityDisplay.innerText = currentWeight;
 
-    // Calculate the liquid level based on the current weight and maximum capacity
-    const maxCapacity = 1000; // Example maximum capacity, adjust as needed
+
+    const maxCapacity = 1000;
     const liquidLevel = (currentWeight / maxCapacity) * 100;
 
-    // Update the liquid level CSS
+
     liquid.style.height = `${liquidLevel}%`;
 }
 
@@ -62,7 +123,6 @@ function addQuantities(inputQuantity) {
 }
 
 
-// Function to execute refill for one round
 function executeRefill() {
 
     var quantityForRound = 0;
@@ -72,13 +132,12 @@ function executeRefill() {
         quantityForRound = quantities.shift();
     }
 
-    // AJAX request to backend to refill jar for one round
     fetch('/refill', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(quantityForRound), // Send quantity for one round
+        body: JSON.stringify(quantityForRound), 
     })
     .then(response => {
         if (!response.ok) {

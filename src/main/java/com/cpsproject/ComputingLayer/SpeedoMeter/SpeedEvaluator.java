@@ -1,4 +1,4 @@
-package com.cpsproject.service;
+package com.cpsproject.ComputingLayer.SpeedoMeter;
 
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,10 @@ public class SpeedEvaluator {
             return RefillSpeed.SPEED_HIGH;
         } else if (remainingCapacity >= RefillSpeed.SPEED_MEDIUM.getRefillAmount()) {
             return RefillSpeed.SPEED_MEDIUM;
-        } else {
+        } else if (remainingCapacity >= RefillSpeed.SPEED_LOW.getRefillAmount()) {
             return RefillSpeed.SPEED_LOW;
+        } else  {
+            return RefillSpeed.SPEED_MIN;
         }
     }
     

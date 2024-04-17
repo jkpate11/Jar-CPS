@@ -1,4 +1,8 @@
-package com.cpsproject.model;
+package com.cpsproject.PhysicalEnvironment;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -8,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cpsproject.SRC.RoundController;
 
 @Component
 @RestController
@@ -17,15 +20,13 @@ public class Jar {
 	private double currentWeight;
     private double maxCapacity;
     private final SimpMessagingTemplate weightInfo;
-    private final RoundController roundController;
 
     @Autowired
-    public Jar(double maxCapacity, SimpMessagingTemplate weightInfo, RoundController roundController) {
+    public Jar(double maxCapacity, SimpMessagingTemplate weightInfo) {
     	this.maxCapacity = maxCapacity;
         this.currentWeight = maxCapacity; // Initially full
         this.weightInfo = weightInfo;
         getCurrentWeightInfo();
-        this.roundController = roundController;
     }
 
     public double getCurrentWeight() {
@@ -42,7 +43,7 @@ public class Jar {
     }
 
     public boolean isFull() {
-        return currentWeight >= maxCapacity;
+        return currentWeight == maxCapacity;
     }
     
     public boolean isOverflow() {
@@ -59,7 +60,6 @@ public class Jar {
     public void addWeight(double weight) {
         // Add the weight to the current weight
         currentWeight += weight;
-        roundController.finishRound(currentWeight);
         // Check if the jar is now full
         if (isOverflow()) {
             // Perform any necessary actions when the jar is full
@@ -67,12 +67,40 @@ public class Jar {
         }
     }
     
+    
+    @PostMapping("/dataFromFile")
+    public void readInputFromFile(@RequestBody String filePath) {
+    	//filePath = "src/main/resources/test1.csv";
+    	System.out.println(filePath);
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+            	if (line.trim().startsWith("#")) {
+                    continue;
+                }
+                double quantity = Double.parseDouble(line.trim());
+                refillJar(quantity);
+                Thread.sleep(1000);
+            }
+            
+            while (true) {
+                refillJar(0);
+                Thread.sleep(1000);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
     @PostMapping("/refill")
     public double refillJar(@RequestBody double quantity) {
-    	roundController.startRound(quantity, currentWeight);
     	removeWeight(quantity);
-    	roundController.executeRound(currentWeight);
         return currentWeight;
+    }
+    
+    @PostMapping("/addExtraWeight")
+    public void addExtraWeight(@RequestBody double quantity) {
+    	addWeight(quantity);
     }
 
 }

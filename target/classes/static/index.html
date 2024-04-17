@@ -3,6 +3,7 @@
     <link rel="shortcut icon" href="#">
     <script src="https://cdn.jsdelivr.net/sockjs/latest/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+    <script src="js/script.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,11 +39,12 @@
     </div>
 
     <div id="input-container">
-        <input type="text" id="input-quantity" placeholder="Enter quantities separated by commas">
-        <button id="execute-btn">Execute</button>
+        <input type="text" id="input-quantity" placeholder="Enter quantities separated by commas" hidden>
+        <button id="execute-btn" hidden>Execute</button>
+        <button id="send-file-btn">Run File</button>
+        <br>
+        <br>
+        <button id="fail-btn">Overflow the jar</button>
     </div>
-    <script src="https://cdn.jsdelivr.net/sockjs/latest/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
-    <script src="js/script.js"></script>
 </body>
 </html>

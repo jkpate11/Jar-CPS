@@ -108,3 +108,31 @@ body {
 #execute-btn:hover {
     background-color: #45a049;
 }
+
+#send-file-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#send-file-btn:hover {
+    background-color: #45a049;
+}
+
+#fail-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #af564c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#fail-btn:hover {
+    background-color: #a05145;
+}

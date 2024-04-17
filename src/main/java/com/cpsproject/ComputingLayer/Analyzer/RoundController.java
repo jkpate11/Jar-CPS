@@ -1,4 +1,4 @@
-package com.cpsproject.SRC;
+package com.cpsproject.ComputingLayer.Analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +25,15 @@ public class RoundController {
         this.roundInfo = roundInfo;
     }
 
-    // Method to start a new round
-    public void startRound(double quantity, double weight) {
-        if (!isRoundInProgress && (weight<maxCapacity || weight > 0)) {
+
+    public void startRound(double quantity,double startingWeight,double currentWeight) {
+        if (!isRoundInProgress && (startingWeight<maxCapacity || startingWeight > 0)) {
             isRoundInProgress = true;
             currentRound = new Round();
             currentRound.setRoundId(currentRoundId);
-            currentRound.setStartingWeight(weight);
+            currentRound.setStartingWeight(startingWeight);
+            currentRound.setWeightChangeDueToRemoval(currentWeight);
+        	currentRound.setRemovedWeight(quantity);
             currentRoundId++;
             
         }
@@ -40,22 +42,23 @@ public class RoundController {
     public void finishRound(double weight) {
         if (isRoundInProgress) {
             isRoundInProgress = false;
-            currentRound.setEndingWeight(weight);
-            currentRound.setRefillAmount(currentRound.getEndingWeight() - currentRound.getWeightChangeDueToRemoval()); 
+            currentRound.setRefillAmount(weight);
+            currentRound.setEndingWeight(weight + currentRound.getWeightChangeDueToRemoval()); 
             rounds.add(currentRound);
 //            System.out.println();
 //            System.out.println(currentRound.getRoundInfo());
 //            System.out.println();
             roundInfo.convertAndSend("/topic/round", currentRound.getRoundInfoJSON());
             
+            try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+            isRoundInProgress = false;
+            
         }
     }
 
-    // Method to execute one round
-    public void executeRound(double weight) {
-    	if (isRoundInProgress) {
-    		currentRound.setWeightChangeDueToRemoval(weight);
-        	currentRound.setRemovedWeight(currentRound.getStartingWeight() - weight);
-    	}
-    }
+
 }
