@@ -71,7 +71,7 @@ public class Jar {
     @PostMapping("/dataFromFile")
     public void readInputFromFile(@RequestBody String filePath) {
     	//filePath = "src/main/resources/test1.csv";
-    	System.out.println(filePath);
+    	//System.out.println(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {

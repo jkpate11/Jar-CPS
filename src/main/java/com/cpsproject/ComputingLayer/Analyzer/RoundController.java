@@ -27,7 +27,7 @@ public class RoundController {
 
 
     public void startRound(double quantity,double startingWeight,double currentWeight) {
-        if (!isRoundInProgress && (startingWeight<maxCapacity || startingWeight > 0)) {
+        if (!isRoundInProgress && (startingWeight<maxCapacity || startingWeight > 0)&& (currentWeight+20<maxCapacity&&quantity!=0)) {
             isRoundInProgress = true;
             currentRound = new Round();
             currentRound.setRoundId(currentRoundId);

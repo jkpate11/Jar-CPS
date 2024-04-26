@@ -14,8 +14,10 @@ public class SpeedEvaluator {
             return RefillSpeed.SPEED_MEDIUM;
         } else if (remainingCapacity >= RefillSpeed.SPEED_LOW.getRefillAmount()) {
             return RefillSpeed.SPEED_LOW;
-        } else  {
+        } else if (remainingCapacity >= RefillSpeed.SPEED_MIN.getRefillAmount()) {
             return RefillSpeed.SPEED_MIN;
+        } else  {
+            return RefillSpeed.STOP;
         }
     }
     
