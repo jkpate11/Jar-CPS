@@ -51,19 +51,18 @@ public class Jar {
     }
     
     public void removeWeight(double weight) {
-    	if (currentWeight>=weight) {
+    	if (!isOverflow()&&currentWeight>=weight) {
     		currentWeight -= weight;
     	}
     }
 
   
     public void addWeight(double weight) {
-        // Add the weight to the current weight
-        currentWeight += weight;
         // Check if the jar is now full
         if (isOverflow()) {
-            // Perform any necessary actions when the jar is full
             System.out.println("Jar is Overflowing");
+        } else {
+        	currentWeight += weight;
         }
     }
     

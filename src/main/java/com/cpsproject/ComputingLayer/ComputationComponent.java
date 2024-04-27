@@ -39,7 +39,6 @@ public class ComputationComponent {
     		notifyUser();
     		
     	}else {
-
     		double quantity = previousWeight - currentWeight;
         	roundController.startRound(quantity, previousWeight, currentWeight);
         	refillJar(currentWeight); 		

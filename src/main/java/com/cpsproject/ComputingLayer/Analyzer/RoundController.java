@@ -45,9 +45,6 @@ public class RoundController {
             currentRound.setRefillAmount(weight);
             currentRound.setEndingWeight(weight + currentRound.getWeightChangeDueToRemoval()); 
             rounds.add(currentRound);
-//            System.out.println();
-//            System.out.println(currentRound.getRoundInfo());
-//            System.out.println();
             roundInfo.convertAndSend("/topic/round", currentRound.getRoundInfoJSON());
             
             try {

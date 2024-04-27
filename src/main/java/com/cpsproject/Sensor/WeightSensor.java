@@ -19,7 +19,7 @@ public class WeightSensor implements Sensor {
         this.previousWeight = jar.getMaxCapacity();
     }
 
-    @Scheduled(fixedRate = 200) // Run every 1 second
+    @Scheduled(fixedRate = 200) // Run every 0.2 second
     public void monitor() {
         double currentWeight = jar.getCurrentWeight();
         

@@ -88,13 +88,12 @@ function addWeight() {
         body: JSON.stringify(1200), 
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (response.ok) {
+            alert("Due to overflow, the system has been stopped. An email has been sent to the user."); 
         }
         return response.json();
     })
     .then(data => {
-
         console.log("Failed done");
     })
     .catch((error) => {
